@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>史弟夫數學 - 倍數練習</title>
+    <!-- 引入 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f3f4f6;
+            --border-color: #e5e7eb;
+            --white: #ffffff;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 20px;
+        }
+
+        #quiz-container {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 550px;
+            text-align: center;
+            margin: 40px auto;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        #title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* 【修改】Logo 圖片的樣式 */
+        #logo-img {
+            width: 48px;
+            height: 48px;
+            /* 移除了 filter: invert(1); 以顯示原始 Logo 顏色 */
+        }
+        
+        #main-title {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        #question {
+            font-size: 1.8em;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        #sub-question {
+            font-size: 1.25em;
+            color: var(--text-light);
+            margin: 8px 0 30px 0;
+        }
+
+        #options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            background-color: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .option-btn.animate-in {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary-color);
+            transform: translateY(-4px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.selected-incorrect {
+            background-color: #fee2e2;
+            border-color: var(--error-color);
+            color: var(--error-color);
+        }
+
+        .option-btn.final-correct {
+            background-color: #d1fae5;
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        #feedback {
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feedback-line {
+            font-weight: 700;
+            font-size: 1.25em;
+        }
+
+        .feedback-hint {
+            color: var(--text-light);
+            font-size: 1em;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .correct .feedback-line {
+            color: var(--success-color);
+        }
+
+        .incorrect .feedback-line {
+            color: var(--error-color);
+        }
+
+        #next-button {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--white);
+            background: var(--primary-color);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+        }
+
+        #next-button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 10px rgba(79, 70, 229, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div id="title-container">
+        <!-- 【修改】替換為指向您檔案的 <img> 標籤 -->
+        <img id="logo-img" src="logo.png" alt="史弟夫數學 Logo">
+        <h1 id="main-title">史弟夫數學</h1>
+    </div>
+
+    <h2 id="question">倍數問題</h2>
+    <p id="sub-question"></p>
+    <div id="options-container"></div>
+    <div id="feedback"></div>
+    <button id="next-button">下一題</button>
+</div>
+
+<script>
+    const quizContainerEl = document.getElementById('quiz-container');
+    const subQuestionEl = document.getElementById('sub-question');
+    const optionsContainerEl = document.getElementById('options-container');
+    const feedbackEl = document.getElementById('feedback');
+    const nextButtonEl = document.getElementById('next-button');
+
+    const divisors = [2, 3, 4, 5, 9, 11];
+    const numOptions = 5;
+    const numberRange = { min: 10, max: 999 };
+
+    let correctAnswer;
+    let currentDivisor;
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+    
+    function generateHint(divisor, number) {
+        const digits = String(number).split('').map(Number);
+        switch (divisor) {
+            case 2: return `提示：以 ${number} 為例，它的個位數是 ${number % 10}，是偶數。`;
+            case 3: case 9: {
+                const sum = digits.reduce((a, b) => a + b, 0);
+                return `提示：以 ${number} 為例，位數和為 ${digits.join(' + ')} = ${sum}，而 ${sum} 是 ${divisor} 的倍數。`;
+            }
+            case 4: {
+                const lastTwoDigits = number % 100;
+                return `提示：以 ${number} 為例，它的末兩位是 ${String(lastTwoDigits).padStart(2, '0')}，而 ${lastTwoDigits} 是 4 的倍數。`;
+            }
+            case 5: return `提示：以 ${number} 為例，它的個位數是 ${number % 10}。`;
+            case 11: {
+                let oddSum = 0, evenSum = 0;
+                const oddDigits = [], evenDigits = [];
+                digits.slice().reverse().forEach((digit, index) => {
+                    if ((index + 1) % 2 !== 0) { oddSum += digit; oddDigits.push(digit); }
+                    else { evenSum += digit; evenDigits.push(digit); }
+                });
+                const diff = Math.abs(oddSum - evenSum);
+                return `提示：以 ${number} 為例，奇數位和 (${oddDigits.reverse().join(' + ')}) = ${oddSum}，偶數位和 (${evenDigits.reverse().join(' + ') || '0'}) = ${evenSum}。兩者相差 ${diff}，所以是 11 的倍數。`;
+            }
+            default: return '';
+        }
+    }
+
+    function generateQuestion() {
+        feedbackEl.innerHTML = '';
+        optionsContainerEl.innerHTML = '';
+
+        currentDivisor = divisors[Math.floor(Math.random() * divisors.length)];
+        subQuestionEl.textContent = `下列何者是 ${currentDivisor} 的倍數？`;
+
+        const minMultiplier = Math.ceil(numberRange.min / currentDivisor);
+        const maxMultiplier = Math.floor(numberRange.max / currentDivisor);
+        correctAnswer = getRandomInt(minMultiplier, maxMultiplier) * currentDivisor;
+
+        const options = [correctAnswer];
+        while (options.length < numOptions) {
+            let incorrectCandidate = getRandomInt(numberRange.min, numberRange.max);
+            if (incorrectCandidate % currentDivisor !== 0 && !options.includes(incorrectCandidate)) {
+                options.push(incorrectCandidate);
+            }
+        }
+
+        shuffleArray(options);
+
+        options.forEach((option, index) => {
+            const button = document.createElement('button');
+            button.className = 'option-btn';
+            button.textContent = option;
+            button.addEventListener('click', handleOptionClick);
+            optionsContainerEl.appendChild(button);
+
+            setTimeout(() => {
+                button.classList.add('animate-in');
+            }, index * 80);
+        });
+
+        quizContainerEl.style.opacity = '1';
+    }
+
+    function handleOptionClick(event) {
+        const selectedButton = event.target;
+        const selectedAnswer = parseInt(selectedButton.textContent, 10);
+
+        const allButtons = optionsContainerEl.querySelectorAll('.option-btn');
+        allButtons.forEach(button => {
+            button.disabled = true;
+            if (parseInt(button.textContent, 10) === correctAnswer) {
+                button.classList.add('final-correct');
+            }
+        });
+
+        if (selectedAnswer === correctAnswer) {
+            feedbackEl.className = 'correct';
+            feedbackEl.innerHTML = '<p class="feedback-line">答對了！</p>';
+        } else {
+            selectedButton.classList.add('selected-incorrect');
+            feedbackEl.className = 'incorrect';
+            const hint = generateHint(currentDivisor, correctAnswer);
+            feedbackEl.innerHTML = `
+                <p class="feedback-line">答錯了！正確答案是 ${correctAnswer}。</p>
+                <p class="feedback-hint">${hint}</p>
+            `;
+        }
+    }
+
+    nextButtonEl.addEventListener('click', generateQuestion);
+
+    document.addEventListener('DOMContentLoaded', generateQuestion);
+</script>
+
+</body>
+</html>
